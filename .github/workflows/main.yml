@@ -1,4 +1,15 @@
- - name: Upload static files to R2
+name: Get Subscription Weekly
+
+on:
+  schedule:
+    - cron: '30 7 * * *' # 北京时间每周日凌晨执行
+  workflow_dispatch: # 允许手动触发
+
+permissions:
+  contents: write
+
+jobs:
+    - name: Upload static files to R2
       uses: ryand56/r2-upload-action@latest
       with:
           r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
