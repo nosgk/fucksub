@@ -1,0 +1,43 @@
+name: Get Subscription Weekly
+
+on:
+  schedule:
+    - cron: '30 7 * * *' # 北京时间每周日凌晨执行
+  workflow_dispatch: # 允许手动触发
+
+permissions:
+  contents: write
+
+jobs:
+  execute-script:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v3
+      with:
+        python-version: "3.10"
+
+    - name: Install dependencies
+      run: |
+        pip3 install pyYAML requests tqdm
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        
+# usage: collect.py [-h] [-a] [-c] [-d DELAY] [-f FILENAME] [-g GIST] [-i] [-k KEY] [-l LIFE] [-n NUM] [-o] [-p PAGES] [-r] [-s] [-t TIMEOUT] [-u URL] [-v VESTIGIAL]
+
+    - name: Collect Subscribe
+      id: collect
+      run: |
+        python -u subscribe/collect.py -a -s -r -o
+      
+    - name: Create/Update Gist
+      env:
+        GH_TOKEN: ${{ secrets.PAT }}
+      run: |
+        cd data
+        gh gist edit ${{ secrets.GIST_ID1 }} --add "proxies.yaml"
+        gh gist edit ${{ secrets.GIST_ID2 }} --add "subscribes.txt"
+        gh gist edit ${{ secrets.GIST_ID3 }} --add "domains.txt"
+        gh gist edit ${{ secrets.GIST_ID4 }} --add "valid-domains.txt"
