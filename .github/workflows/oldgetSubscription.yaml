@@ -40,25 +40,4 @@ jobs:
         gh gist edit ${{ secrets.GIST_ID1 }} --add "proxies.yaml"
         gh gist edit ${{ secrets.GIST_ID2 }} --add "subscribes.txt"
         gh gist edit ${{ secrets.GIST_ID3 }} --add "domains.txt"
-        gh gist edit ${{ secrets.GIST_ID4 }} --add "valid-domains.txt"
-        
-    - name: Configure Git
-      run: |
-        git config user.name "GitHub Actions Bot"
-        git config user.email "actions@github.com"
-        
-    - name: Commit and push changes
-      run: |
-        git add data/proxies.yaml
-        git commit -m "Add generated output.yaml"
-        git push
-        
-    - name: Upload static files to R2
-      uses: ryand56/r2-upload-action@latest
-      with:
-          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
-          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
-          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
-          r2-bucket: ${{ secrets.R2_BUCKET }}
-          source-dir: data/proxies.yaml
-          destination-dir: ./
+        gh gist edit ${{ secrets.GIST_ID4 }} --add "valid-domains.
