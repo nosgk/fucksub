@@ -29,12 +29,12 @@ jobs:
         pip3 install pyYAML requests tqdm
         if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
         
-   # usage: collect.py [-h] [-a] [-c] [-d DELAY] [-f FILENAME] [-g GIST] [-i] [-k KEY] [-l LIFE] [-n NUM] [-o] [-p PAGES] [-r] [-s] [-t TIMEOUT] [-u URL] [-v VESTIGIAL]
+    # usage: collect.py [-h] [-a] [-c] [-d DELAY] [-f FILENAME] [-g GIST] [-i] [-k KEY] [-l LIFE] [-n NUM] [-o] [-p PAGES] [-r] [-s] [-t TIMEOUT] [-u URL] [-v VESTIGIAL]
     - name: Collect Subscribe
       id: collect
       run: |
-        python -u subscribe/collect.py -a -r -o -d 26000 -t 26000 -u http://www.google.com/generate_204
-      
+        python -u subscribe/collect.py -a -r -o -s
+        
     - name: Create/Update Gist
       env:
         GH_TOKEN: ${{ secrets.PAT }}
