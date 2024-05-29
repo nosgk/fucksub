@@ -2,7 +2,7 @@ name: Get Subscription Weekly
 
 on:
   schedule:
-    - cron: '0 */6 * * *'   # 每6个小时跑一次
+    - cron: '0 */8 * * *'   # 每6个小时跑一次
   workflow_dispatch: # 允许手动触发
   
 env:
@@ -64,3 +64,13 @@ jobs:
           r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           r2-bucket: ${{ secrets.R2_BUCKET }}
           source-dir: data
+
+    - name: Delete proxies.yaml
+      run: rm -f data/proxies.yaml
+
+    - name: Commit changes
+      run: |
+        git add data/proxies.yaml
+        git commit -m "Delete proxies.yaml file"
+        git push
+    
