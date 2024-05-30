@@ -2,7 +2,7 @@ name: Get Subscription Weekly
 
 on:
   schedule:
-    - cron: '0 */8 * * *'   # 每6个小时跑一次
+    - cron: '0 */5 * * *'   # 每6个小时跑一次
   workflow_dispatch: # 允许手动触发
   
 env:
