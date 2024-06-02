@@ -53,7 +53,7 @@ jobs:
 
     - name: Commit and push changes
       run: |
-        git add data/clash.yaml
+        git add data
         git commit -m "Add generated output.yaml"
         git push
 
@@ -66,12 +66,11 @@ jobs:
           r2-bucket: ${{ secrets.R2_BUCKET }}
           source-dir: data
 
-    - name: Delete clash.yaml
-      run: rm -f data/clash.yaml
+    - name: Delete 
+      run: rm -f data
 
     - name: Commit changes
       run: |
-        git add data/clash.yaml
-        git commit -m "Delete clash.yaml file"
+        git commit -m "Delete data"
         git push
     
