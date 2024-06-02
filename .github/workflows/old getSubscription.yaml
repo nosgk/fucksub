@@ -1,4 +1,4 @@
-name: Get Subscription Weekly
+name: Get Subscription
 
 on:
   schedule:
@@ -33,7 +33,7 @@ jobs:
     - name: Collect Subscribe
       id: collect
       run: |
-        python -u subscribe/collect.py -a -e -o -s -r
+        python -u subscribe/collect.py -a -e -o -s
         
     - name: Create/Update Gist
       env:
@@ -46,17 +46,6 @@ jobs:
         gh gist edit ${{ secrets.GIST_ID4 }} --add "valid-domains.txt" #保存实际可使用的网站列表
         gh gist edit ${{ secrets.GIST_ID5 }} --add "coupons.txt" #潜在？
 
-    - name: Configure Git
-      run: |
-        git config user.name "GitHub Actions Bot"
-        git config user.email "actions@github.com"
-
-    - name: Commit and push changes
-      run: |
-        git add data/clash.yaml
-        git commit -m "Add generated output.yaml"
-        git push
-
     - name: Upload static files to R2
       uses: ryand56/r2-upload-action@latest
       with:
@@ -65,12 +54,3 @@ jobs:
           r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
           r2-bucket: ${{ secrets.R2_BUCKET }}
           source-dir: data
-
-    - name: Delete 
-      run: rm -f data
-
-    - name: Commit changes
-      run: |
-        git commit -m "Delete data"
-        git push
-    
