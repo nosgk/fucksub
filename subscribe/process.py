@@ -279,6 +279,9 @@ def assign(
         # 是否添加国旗 emoji
         emoji = site.get("emoji", False)
 
+        # 需要人机验证时是否直接放弃
+        chuck = site.get("chuck", False)
+
         if not source:
             source = Origin.TEMPORARY.name if not domain else Origin.OWNED.name
         site["origin"] = source
@@ -325,6 +328,7 @@ def assign(
                 allow_insecure=allow_insecure,
                 ignorede=ignoreder,
                 rigid=rigid,
+                chuck=chuck,
                 special_protocols=special_protocols,
                 emoji_patterns=emoji_patterns if emoji else None,
             )
@@ -490,6 +494,9 @@ def aggregate(args: argparse.Namespace) -> None:
                 availables = [checks[i] for i in range(len(checks)) if masks[i]]
                 nochecks.extend(availables)
 
+                dead = len(checks) - len(availables)
+                logger.info(f"proxies check finished, total: {len(checks)}, alive: {len(availables)}, dead: {dead}")
+
         for item in nochecks:
             item.pop("sub", "")
 
@@ -563,7 +570,7 @@ def aggregate(args: argparse.Namespace) -> None:
             utils.write_file(filename=filename, lines=content)
 
         cost = "{:.2f}s".format(time.time() - starttime)
-        logger.info(f"proxies check finished, group: {k}\tcount: {len(nochecks)}, cost: {cost}")
+        logger.info(f"group [{k}] process finished, count: {len(nochecks)}, cost: {cost}")
 
     config = {
         "domains": sites,
