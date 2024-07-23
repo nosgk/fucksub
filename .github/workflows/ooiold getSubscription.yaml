@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '0 */12 * * *'   # 每6个小时跑一次
   workflow_dispatch: # 允许手动触发
+
+concurrency:
+  group: ${{ github.repository }}
+  cancel-in-progress: true
   
 env:
   # time zone
@@ -29,16 +33,14 @@ jobs:
           architecture: "x64"
           cache: "pip"
 
-      - name: Install dependencies
-        run: |
-           pip3 install pyYAML requests tqdm
-           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+      - name: Install
+        run: pip3 install -r requirements.txt
         
     # usage: collect.py [-h] [-a] [-c] [-d DELAY] [-f FILENAME] [-g GIST] [-i] [-k KEY] [-l LIFE] [-n NUM] [-o] [-p PAGES] [-r] [-s] [-t TIMEOUT] [-u URL] [-v VESTIGIAL]
       - name: Collect Subscribe
         id: collect
         run: |
-          python -u subscribe/collect.py -s
+          python -u subscribe/collect.py -s -r -o -e -a 
         
       - name: Create/Update Gist
         env:
