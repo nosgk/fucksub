@@ -39,8 +39,7 @@ jobs:
     # usage: collect.py [-h] [-a] [-c] [-d DELAY] [-f FILENAME] [-g GIST] [-i] [-k KEY] [-l LIFE] [-n NUM] [-o] [-p PAGES] [-r] [-s] [-t TIMEOUT] [-u URL] [-v VESTIGIAL]
       - name: Collect Subscribe
         id: collect
-        run: |
-          python -u subscribe/collect.py -s -r -o -e -a
+        run: python -u subscribe/collect.py -s -r -o -e -a
         
       - name: Create/Update Gist
         env:
