@@ -117,10 +117,11 @@ def batch_crawl(conf: dict, num_threads: int = 50, display: bool = True) -> list
     datasets, peristedtasks = [], {}
     try:
         persists = conf.get("persist", {})
+        engine = persists.get("engine", "")
         subspushconf = persists.get("subs", {})
         linkspushconf = persists.get("proxies", {})
 
-        pushtool = push.get_instance()
+        pushtool = push.get_instance(engine=engine)
         should_persist = pushtool.validate(push_conf=subspushconf)
         # skip tasks if mode == 1 and not set persistence
         if mode == 1 and not should_persist:
