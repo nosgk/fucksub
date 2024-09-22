@@ -13,6 +13,8 @@ env:
   # time zone
  TZ: Asia/Shanghai
 
+ GIST_PAT: ${{ secrets.PAT }}
+
  ENABLE_SPECIAL_PROTOCOLS: ${{ vars.ENABLE_SPECIAL_PROTOCOLS }}
 
 permissions:
@@ -45,7 +47,7 @@ jobs:
         
       - name: Create/Update Gist
         env:
-          GIST_PAT: ${{ secrets.PAT }}
+          GH_TOKEN: ${{ secrets.PAT }}
         run: |
           cd data
           gh gist edit ${{ secrets.GIST_ID1 }} --add "clash.yaml" #保存的clash格式订阅
