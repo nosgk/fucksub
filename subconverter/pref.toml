@@ -80,7 +80,7 @@ proxy_subscription = "NONE"
 append_proxy_type = false
 
 # When requesting /sub, reload this config file first.
-reload_conf_on_request = false
+reload_conf_on_request = true
 
 [[userinfo.stream_rule]]
 # Rules to extract stream data from node
@@ -171,7 +171,7 @@ quanx_device_id = ""
 resolve_hostname = true
 
 [emojis]
-add_emoji = false
+add_emoji = true
 remove_old_emoji = true
 
 [[emojis.emoji]]
@@ -329,8 +329,8 @@ serve_file_root = "web"
 [advanced]
 log_level = "debug"
 print_debug_info = true
-max_pending_connections = 10240
-max_concurrent_threads = 4
+max_pending_connections = 20240
+max_concurrent_threads = 3
 max_allowed_rulesets = 64
 max_allowed_rules = 0
 max_allowed_download_size = 0
