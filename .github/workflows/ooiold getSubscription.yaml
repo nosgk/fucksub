@@ -2,7 +2,7 @@ name: oldSubscription
 
 on:
   schedule:
-    - cron: '0 */12 * * *'   # 每6个小时跑一次
+    - cron: '0 */24 * * *'   # 每6个小时跑一次
   workflow_dispatch: # 允许手动触发
 
 concurrency:
