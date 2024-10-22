@@ -1,0 +1,66 @@
+name: oldSubscription
+
+on:
+  schedule:
+    - cron: '0 */12 * * *'   # 每6个小时跑一次
+  workflow_dispatch: # 允许手动触发
+
+concurrency:
+  group: ${{ github.repository }}
+  cancel-in-progress: true
+  
+env:
+  # time zone
+ TZ: Asia/Shanghai
+
+ GIST_PAT: ${{ secrets.PAT }}
+
+ ENABLE_SPECIAL_PROTOCOLS: ${{ vars.ENABLE_SPECIAL_PROTOCOLS }}
+
+permissions:
+  contents: write
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Prepare
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          architecture: "x64"
+          cache: "pip"
+
+      - name: Install
+        run: pip3 install -r requirements.txt
+        
+    # usage: collect.py [-h] [-a] [-c] [-d DELAY] [-f FILENAME] [-g GIST] [-i] [-k KEY] [-l LIFE] [-n NUM] [-o] [-p PAGES] [-r] [-s] [-t TIMEOUT] [-u URL] [-v VESTIGIAL]
+      - name: Collect Subscribe
+        id: collect
+        run: python -u subscribe/collect.py -s -r -o -e -a
+        
+      - name: Create/Update Gist
+        env:
+          GH_TOKEN: ${{ secrets.PAT }}
+        run: |
+          cd data
+          gh gist edit ${{ secrets.GIST_ID1 }} --add "clash.yaml" #保存的clash格式订阅
+          gh gist edit ${{ secrets.GIST_ID2 }} --add "subscribes.txt" #保存的订阅？
+          gh gist edit ${{ secrets.GIST_ID3 }} --add "domains.txt" #网站列表
+          gh gist edit ${{ secrets.GIST_ID4 }} --add "valid-domains.txt" #保存实际可使用的网站列表
+          gh gist edit ${{ secrets.GIST_ID5 }} --add "coupons.txt" #潜在？
+
+      - name: Upload static files to R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.R2_BUCKET }}
+          source-dir: data
