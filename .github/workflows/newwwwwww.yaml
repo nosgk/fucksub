@@ -1,0 +1,65 @@
+name: newwwwww
+on:
+  schedule:
+   - cron: '0 */24 * * *'   # 每6个小时跑一次
+  workflow_dispatch:
+
+env:
+  # time zone
+  TZ: Asia/Shanghai
+
+  # network proxy aggregate config
+  SUBSCRIBE_CONF: ${{ secrets.SUBSCRIBE_CONF }}
+
+  # token
+  PUSH_TOKEN: ${{ secrets.PUSH_TOKEN }}
+
+  # network reachable
+  REACHABLE: ${{ vars.REACHABLE }}
+
+  # not check connective
+  SKIP_ALIVE_CHECK: ${{ vars.SKIP_ALIVE_CHECK }}
+
+  # skip remark
+  SKIP_REMARK: ${{ vars.SKIP_REMARK }}
+
+  # workflow mode
+  WORKFLOW_MODE: ${{ vars.WORKFLOW_MODE }}
+
+  # include spwcial protocols, such vless hysteria2 and hysteria
+  ENABLE_SPECIAL_PROTOCOLS: ${{ vars.ENABLE_SPECIAL_PROTOCOLS }}
+
+jobs:
+  process:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Prepare
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+          architecture: "x64"
+          cache: "pip"
+
+      - name: Install
+        run: pip3 install -r requirements.txt
+
+      - name: Process
+        run: python -u subscribe/process.py -f 
+
+      - name: Timestamp
+        run: date
+
+      - name: Upload static files to R2
+        uses: ryand56/r2-upload-action@latest
+        with:
+          r2-account-id: ${{ secrets.R2_ACCOUNT_ID }}
+          r2-access-key-id: ${{ secrets.R2_ACCESS_KEY_ID }}
+          r2-secret-access-key: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          r2-bucket: ${{ secrets.R2_BUCKET }}
+          source-dir: new
